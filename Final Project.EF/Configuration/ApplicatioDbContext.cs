@@ -23,7 +23,8 @@ namespace Final_Project.EF.Configuration
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<Course> Courses{ get; set; }
-
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Quality> Qualities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,6 +63,12 @@ namespace Final_Project.EF.Configuration
 
             modelBuilder.Entity<College>()
                 .HasData( new College { CollegeId = 1 , College_Name = "Computers & AI College" ,  College_Description = "Description" , Contact_Information = "Contact info"} );
+
+            modelBuilder.Entity<Admin>()
+                .HasData(new Admin { Id = 1, Name = "Admin", Email = "admin@mail.com" , Password = "admin123"});
+
+            modelBuilder.Entity<Quality>()
+                .HasData(new Quality { Id = 1 , Name = "Quality 1 Name" , Description = "Quality 1 Description"});
 
         }
 

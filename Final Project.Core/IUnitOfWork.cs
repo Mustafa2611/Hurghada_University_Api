@@ -1,4 +1,5 @@
-﻿using FinalProject.Core.IRepositories;
+﻿using Final_Project.Core.IRepositories;
+using FinalProject.Core.IRepositories;
 using FinalProject.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace FinalProject.Core
         public ICourseRepository Courses { get; }
         public ICollegeRepository Colleges { get; }
         public IUnitRepository Units { get; }
+        public IAdminRepository Admins { get; }
+        public IQualityRepository Qualities { get; }
 
         int Complete();
         Task<int> CompleteAsync();

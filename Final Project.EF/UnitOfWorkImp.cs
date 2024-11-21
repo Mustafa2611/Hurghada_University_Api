@@ -1,4 +1,6 @@
-﻿using Final_Project.EF.Configuration;
+﻿using Final_Project.Core.IRepositories;
+using Final_Project.Core.Models;
+using Final_Project.EF.Configuration;
 using Final_Project.EF.RepositoriesImplementation;
 using FinalProject.Core;
 using FinalProject.Core.IRepositories;
@@ -23,17 +25,19 @@ namespace Final_Project.EF
             Courses = new CourseRepositoryImp(_context);
             Colleges = new CollegeRepositoryImp(_context);
             Units = new UnitRepositoryImp(_context);
+            Admins = new AdminRepositoryImp(_context); 
+            Qualities = new QualityRepositoryImp(_context);
         }
 
         public IEventRepository Events { get; private set; }
-
         public INewsRepository News { get; private set; }
-
         public IDepartmentRepository Departments { get; private set; }
         public IEmployeeRepository Employees { get; private set; }
         public ICourseRepository Courses { get; private set; }
         public ICollegeRepository Colleges { get; private set; }
         public IUnitRepository Units { get; private set; }
+        public IAdminRepository Admins { get; private set; }
+        public IQualityRepository Qualities { get; private set; }
 
         public int Complete()
         {
