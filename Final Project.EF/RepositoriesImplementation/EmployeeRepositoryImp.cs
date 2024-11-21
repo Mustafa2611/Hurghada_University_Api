@@ -3,6 +3,7 @@ using Final_Project.EF.Configuration;
 using FinalProject.Core.IRepositories;
 using FinalProject.Core.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +20,12 @@ namespace Final_Project.EF.RepositoriesImplementation
             _context = context;
         }
 
-        public async Task<string> UploadEmployeeCVAsync(int employeeId, IFormFile CvFile)
+        public  string UploadEmployeeCV( IFormFile CvFile , int? employeeId)
         {
 
-            var employee = await _context.Employees.FindAsync(employeeId);
-            if (employee == null) return null;
+            var employee =  _context.Employees.Find(employeeId);
+            //if (employee == null) return null;
+            _context.Entry(employee).State = EntityState.Detached;
 
             var validExtentions = new List<string>() { ".pdf" , ".docx"};
             var extention = Path.GetExtension(CvFile.FileName);
@@ -36,16 +38,43 @@ namespace Final_Project.EF.RepositoriesImplementation
             //var filename = Guid.NewGuid().ToString() + extention;
             var filename = Guid.NewGuid() + Path.GetFileName(CvFile.FileName);
 
-            var path = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot");
+            var path = Path.Combine(Directory.GetCurrentDirectory(),"Uploads");
             FileStream stream = new FileStream(Path.Combine(path , filename), FileMode.Create);
 
             CvFile.CopyTo(stream);
 
             employee.Resume = filename;
-            await _context.SaveChangesAsync();
+             _context.SaveChanges();
 
             return employee.Resume;
 
+        }
+
+        public  string UploadEmployeeCV(IFormFile CvFile, Employee? employee)
+        {
+            //var employee = await _context.Employees.FindAsync(employeeId);
+            //if (employee == null) return null;
+
+            var validExtentions = new List<string>() { ".pdf", ".docx" };
+            var extention = Path.GetExtension(CvFile.FileName);
+            if (!validExtentions.Contains(extention)) return $"Extention is not valid {string.Join(',', validExtentions)}";
+
+            long size = CvFile.Length;
+            if (size > (5 * 1024 * 1024))
+                return $"Maximum size can be 5mb";
+
+            //var filename = Guid.NewGuid().ToString() + extention;
+            var filename = Guid.NewGuid() + Path.GetFileName(CvFile.FileName);
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            FileStream stream = new FileStream(Path.Combine(path, filename), FileMode.Create);
+
+            CvFile.CopyTo(stream);
+
+            employee.Resume = filename;
+             _context.SaveChanges();
+
+            return employee.Resume;
         }
 
         //public async Task<string> UploadEmployeeCVAsync(int employeeId , IFormFile CVFile , string uploadDirectory)

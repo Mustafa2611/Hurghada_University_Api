@@ -12,7 +12,8 @@ namespace FinalProject.Core.IRepositories
     public interface IEmployeeRepository : IBaseRepository<Employee>
     {
 
-        public Task<string> UploadEmployeeCVAsync(int employeeId, IFormFile CvFile);
+        public string UploadEmployeeCV(IFormFile CvFile , int? employeeId);
+        public string UploadEmployeeCV(IFormFile CvFile, Employee? employee);
 
         //Task<IEnumerable<Employee>> GetAllAsync();
         //Task<Employee> GetByIdAsync(int id);

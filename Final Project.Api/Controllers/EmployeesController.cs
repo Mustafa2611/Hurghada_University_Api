@@ -12,11 +12,9 @@ namespace Final_Project.Api.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _hostEnvironment;
-        public EmployeeController(IUnitOfWork unitOfWork , IWebHostEnvironment webHostEnvironment)
+        public EmployeeController(IUnitOfWork unitOfWork )
         {
             _unitOfWork = unitOfWork;
-            _hostEnvironment = webHostEnvironment;
         }
 
         // POST: api/Employee/Create_Employee
@@ -29,11 +27,11 @@ namespace Final_Project.Api.Controllers
                 Email = employeeDto.Email,
                 Password = employeeDto.Password,
                 Job_Title = employeeDto.Job_Title,
-                Resume = employeeDto.Resume,
+                //Resume =  _unitOfWork.Employees.UploadEmployeeCV(employeeDto.Resume , null).ToString(),
                 //DepartmentId = employeeDto.DepartmentId
                 //Department =await _unitOfWork.Departments.GetByIdAsync(d => d.DepartmentId == employeeDto.DepartmentId)
             };
-
+            employee.Resume = _unitOfWork.Employees.UploadEmployeeCV(employeeDto.Resume, employee);
             var AddEmployee = await _unitOfWork.Employees.AddAsync(employee);
             if (AddEmployee == null) return BadRequest("Employee creation failed");
 
@@ -52,7 +50,7 @@ namespace Final_Project.Api.Controllers
 
             //Directory.CreateDirectory(uploadDirectory);
 
-            if(await _unitOfWork.Employees.UploadEmployeeCVAsync(employeeId, CVFile) == null)
+            if( _unitOfWork.Employees.UploadEmployeeCV( CVFile , employeeId) == null)
                 return BadRequest("CV Upload failed");
 
             await _unitOfWork.CompleteAsync();
@@ -100,7 +98,7 @@ namespace Final_Project.Api.Controllers
                 Email = employeeDto.Email,
                 Password = employeeDto.Password,
                 Job_Title = employeeDto.Job_Title,
-                Resume = employeeDto.Resume,
+                Resume = _unitOfWork.Employees.UploadEmployeeCV(employeeDto.Resume , employeeDto.EmployeeId),
                 //DepartmentId = employeeDto.DepartmentId,
                 Department = await _unitOfWork.Departments.GetByIdAsync(d=> d.DepartmentId == employeeDto.DepartmentId)
             };
